@@ -42,6 +42,21 @@ OPTIMIZER_REGISTRY = {
     "rao": RaoOptimizer,
 }
 
+INDIVIDUAL_LABELS = {
+    "gwo": "Wolf",
+    "pso": "Particle",
+    "woa": "Whale",
+    "rao": "Agent",
+}
+
+
+def build_run_title_suffix(run_number, run_seed):
+    return f" - Run {run_number} | Seed {run_seed}"
+
+
+def get_individual_label(algorithm_name):
+    return INDIVIDUAL_LABELS.get(algorithm_name.lower(), "Individual")
+
 
 def build_model(model_config, in_channels, img_size, num_classes):
     return HybridCNN(
@@ -389,12 +404,28 @@ def run_final_training(bundle, config, best_config, device, logger, run_dir):
     }
 
 
-def save_run_outputs(run_dir, algorithm_name, config, search_result, final_result, best_config, run_seed):
+def save_run_outputs(run_dir, algorithm_name, config, search_result, final_result, best_config, run_seed, run_number):
+    title_suffix = build_run_title_suffix(run_number, run_seed)
+    individual_label = get_individual_label(algorithm_name)
     write_json(os.path.join(run_dir, "config_used.json"), config_to_dict(config))
-    plot_global(search_result["global_bests"], os.path.join(run_dir, "global_best.png"), title=f"{algorithm_name.upper()} Global Best Fitness")
-    plot_locals(search_result["local_bests"], os.path.join(run_dir, "local_bests.png"), title=f"{algorithm_name.upper()} Local Bests")
-    plot_curves(final_result["history"], os.path.join(run_dir, "training_curves.png"))
-    plot_confusion_matrix(final_result["confusion_matrix"], CLASS_NAMES, os.path.join(run_dir, "confusion_matrix.png"))
+    plot_global(
+        search_result["global_bests"],
+        os.path.join(run_dir, "global_best.png"),
+        title=f"{algorithm_name.upper()} Global Best Fitness{title_suffix}",
+    )
+    plot_locals(
+        search_result["local_bests"],
+        os.path.join(run_dir, "local_bests.png"),
+        title=f"{algorithm_name.upper()} Local Bests{title_suffix}",
+        individual_label=individual_label,
+    )
+    plot_curves(final_result["history"], os.path.join(run_dir, "training_curves.png"), title_suffix=title_suffix)
+    plot_confusion_matrix(
+        final_result["confusion_matrix"],
+        CLASS_NAMES,
+        os.path.join(run_dir, "confusion_matrix.png"),
+        title_suffix=title_suffix,
+    )
 
     run_summary = {
         "algorithm": algorithm_name,
@@ -477,7 +508,7 @@ def run_single_experiment(base_config, algorithm_name, run_index, logger):
     search_result = build_search_result(bundle, run_config, device, logger, run_dir, algorithm_name)
     best_config = map_position_to_config(search_result["best_pos"], run_config)
     final_result = run_final_training(bundle, run_config, best_config, device, logger, run_dir)
-    run_summary = save_run_outputs(run_dir, algorithm_name, run_config, search_result, final_result, best_config, run_seed)
+    run_summary = save_run_outputs(run_dir, algorithm_name, run_config, search_result, final_result, best_config, run_seed, run_number)
     logger.info("run_complete=%s algorithm=%s run_dir=%s", run_index + 1, algorithm_name, run_dir)
     return {
         "run_dir": run_dir,

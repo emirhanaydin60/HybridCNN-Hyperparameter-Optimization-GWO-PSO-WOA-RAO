@@ -1,2 +1,0 @@
-run_id,baseline_acc,gwo_acc,improvement,best_shared_conv_kernel_size,best_base_filters,best_dilation,best_final_neurons,best_dropout,best_learning_rate,best_batch_size,best_se_ratio
-1,0.794600,0.855700,6.110000,3,256,2,128,0.2781,0.001095,32,8

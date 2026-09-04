@@ -1,6 +1,0 @@
-{
-  "final_report_dir": "results_smoke\\CIFAR10\\final_report",
-  "overall_summary_path": "results_smoke\\CIFAR10\\final_report\\overall_summary.json",
-  "friedman_results_path": "results_smoke\\CIFAR10\\final_report\\friedman_results.json",
-  "wilcoxon_results_path": "results_smoke\\CIFAR10\\final_report\\wilcoxon_results.csv"
-}

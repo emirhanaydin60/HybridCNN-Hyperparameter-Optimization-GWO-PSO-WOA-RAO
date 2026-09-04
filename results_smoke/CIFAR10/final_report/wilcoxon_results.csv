@@ -1,7 +1,0 @@
-algorithm_a,algorithm_b,statistic,p_value,significant,n_pairs
-GWO,PSO,0.0,1.0,False,0
-GWO,WOA,0.0,1.0,False,0
-GWO,RAO,0.0,1.0,False,0
-PSO,WOA,0.0,1.0,False,0
-PSO,RAO,0.0,1.0,False,1
-WOA,RAO,0.0,1.0,False,1

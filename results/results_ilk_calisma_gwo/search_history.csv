@@ -1,1 +1,0 @@
-run_id,iteration,wolf_id,shared_conv_kernel_size,base_filters,dilation,final_neurons,dropout,learning_rate,batch_size,se_ratio,fitness,cache_hit,evaluation_time,combination_key,iteration_unique_solutions,iteration_repeat_rate,iteration_avg_fitness,iteration_best_fitness

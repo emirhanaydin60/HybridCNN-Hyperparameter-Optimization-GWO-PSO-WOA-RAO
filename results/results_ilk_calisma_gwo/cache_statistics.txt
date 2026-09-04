@@ -1,7 +1,0 @@
-Total Evaluations: 128
-Real Training Count: 121
-Cache Hits: 7
-Cache Misses: 121
-Saved Training Count: 7
-Saved Estimated Time (seconds): 0.000000
-Cache Reuse Rate (%): 5.47

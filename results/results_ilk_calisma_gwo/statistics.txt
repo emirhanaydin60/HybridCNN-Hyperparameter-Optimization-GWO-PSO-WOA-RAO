@@ -1,3 +1,0 @@
-Average Accuracy: mean=0.855700, std=0.000000
-Baseline Accuracy: mean=0.794600, std=0.000000
-Average Improvement: mean=6.110000, std=0.000000

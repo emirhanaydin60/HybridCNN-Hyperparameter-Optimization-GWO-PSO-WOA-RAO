@@ -1,0 +1,181 @@
+{
+  "dataset": "cifar10",
+  "config": {
+    "dataset": "cifar10",
+    "model_name": "hybrid_cnn",
+    "optimizers": [
+      "gwo",
+      "pso",
+      "woa",
+      "rao"
+    ],
+    "population_size": 8,
+    "iteration_count": 15,
+    "search_epochs": 6,
+    "final_epochs": 50,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "subset_size": null,
+    "random_seed": 42,
+    "patience": 10,
+    "lr_reduce_factor": 0.5,
+    "lr_reduce_patience": 4,
+    "runs": 3,
+    "monitor_ratio": 0.1,
+    "train_size": 45000,
+    "val_size": 5000,
+    "num_workers": 0,
+    "results_dir": "results",
+    "data_dir": "data",
+    "search_space": {
+      "shared_conv_kernel_sizes": [
+        3,
+        5,
+        7
+      ],
+      "base_filters": [
+        16,
+        32,
+        64,
+        128,
+        256
+      ],
+      "dilations": [
+        1,
+        2,
+        3
+      ],
+      "final_neurons": [
+        128,
+        256,
+        512
+      ],
+      "se_ratios": [
+        4,
+        8,
+        16
+      ],
+      "batch_sizes": [
+        32,
+        64,
+        128
+      ],
+      "learning_rate_min": 0.0001,
+      "learning_rate_max": 0.01,
+      "dropout_min": 0.1,
+      "dropout_max": 0.7
+    }
+  },
+  "algorithm_summary": {
+    "GWO": {
+      "runs": 3,
+      "mean_validation_accuracy": 0.8060666666666666,
+      "std_validation_accuracy": 0.008230566336663737,
+      "mean_test_accuracy": 0.8671333333333333,
+      "std_test_accuracy": 0.012525795605691295,
+      "mean_runtime": 90701.0501099,
+      "std_runtime": 18224.359877586758,
+      "mean_f1": 0.8665006341165377,
+      "std_f1": 0.012847758907728992
+    },
+    "PSO": {
+      "runs": 3,
+      "mean_validation_accuracy": 0.8046666666666668,
+      "std_validation_accuracy": 0.005092041721047571,
+      "mean_test_accuracy": 0.8583999999999999,
+      "std_test_accuracy": 0.008889319434017447,
+      "mean_runtime": 95940.15121626668,
+      "std_runtime": 11555.399631349865,
+      "mean_f1": 0.8583485859384966,
+      "std_f1": 0.008946031099664386
+    },
+    "WOA": {
+      "runs": 3,
+      "mean_validation_accuracy": 0.7895333333333333,
+      "std_validation_accuracy": 0.019262629334773827,
+      "mean_test_accuracy": 0.8513333333333334,
+      "std_test_accuracy": 0.018539567296880353,
+      "mean_runtime": 79951.42585080002,
+      "std_runtime": 46692.627419090066,
+      "mean_f1": 0.8510795363762261,
+      "std_f1": 0.01853719390635326
+    },
+    "RAO": {
+      "runs": 3,
+      "mean_validation_accuracy": 0.7864666666666666,
+      "std_validation_accuracy": 0.005063156678946032,
+      "mean_test_accuracy": 0.8478666666666667,
+      "std_test_accuracy": 0.01564402619390404,
+      "mean_runtime": 98842.227831,
+      "std_runtime": 54068.0500325363,
+      "mean_f1": 0.8474253033925988,
+      "std_f1": 0.015925713195704322
+    }
+  },
+  "friedman_results": {
+    "metric": "test_accuracy",
+    "statistic": 4.200000000000003,
+    "p_value": 0.24066188520966425,
+    "significant": false,
+    "n_runs": 3,
+    "n_algorithms": 4
+  },
+  "wilcoxon_pairs": [
+    {
+      "algorithm_a": "GWO",
+      "algorithm_b": "PSO",
+      "statistic": 1.0,
+      "p_value": 0.4226780741706353,
+      "significant": false,
+      "n_pairs": 3
+    },
+    {
+      "algorithm_a": "GWO",
+      "algorithm_b": "WOA",
+      "statistic": 1.0,
+      "p_value": 0.4226780741706353,
+      "significant": false,
+      "n_pairs": 3
+    },
+    {
+      "algorithm_a": "GWO",
+      "algorithm_b": "RAO",
+      "statistic": 0.0,
+      "p_value": 0.18144920772142026,
+      "significant": false,
+      "n_pairs": 3
+    },
+    {
+      "algorithm_a": "PSO",
+      "algorithm_b": "WOA",
+      "statistic": 1.0,
+      "p_value": 0.4226780741706353,
+      "significant": false,
+      "n_pairs": 3
+    },
+    {
+      "algorithm_a": "PSO",
+      "algorithm_b": "RAO",
+      "statistic": 0.0,
+      "p_value": 0.18144920772142026,
+      "significant": false,
+      "n_pairs": 3
+    },
+    {
+      "algorithm_a": "WOA",
+      "algorithm_b": "RAO",
+      "statistic": 2.0,
+      "p_value": 0.7892680261342813,
+      "significant": false,
+      "n_pairs": 3
+    }
+  ],
+  "total_runs": 12,
+  "algorithms": [
+    "GWO",
+    "PSO",
+    "WOA",
+    "RAO"
+  ],
+  "final_report_dir": "results\\CIFAR10\\final_report"
+}

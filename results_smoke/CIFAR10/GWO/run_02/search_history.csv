@@ -1,3 +1,0 @@
-iteration,unique_solution_count,repeat_rate,average_fitness,best_fitness,worst_fitness,population_diversity,exploration_ratio,exploitation_ratio,iteration_time
-0,1,0.0,0.104,0.104,0.104,0.0,0.0,1.0,2.399776600068435
-1,1,0.0,0.0928,0.0928,0.0928,0.0,1.0,0.0,2.4328060999978334

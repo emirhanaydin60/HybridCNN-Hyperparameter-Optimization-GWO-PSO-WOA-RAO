@@ -1,7 +1,0 @@
-iteration,best_fitness,average_fitness,unique_solution_count
-
-Unique Solutions Evaluated: 0
-first_iter_fitness: 0.000000
-last_iter_fitness: 0.000000
-fitness_increase: 0.000000
-convergence_percent: 0.00

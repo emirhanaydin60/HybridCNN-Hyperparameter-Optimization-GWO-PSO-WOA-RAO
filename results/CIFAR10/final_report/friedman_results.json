@@ -1,0 +1,8 @@
+{
+  "metric": "test_accuracy",
+  "statistic": 4.200000000000003,
+  "p_value": 0.24066188520966425,
+  "significant": false,
+  "n_runs": 3,
+  "n_algorithms": 4
+}

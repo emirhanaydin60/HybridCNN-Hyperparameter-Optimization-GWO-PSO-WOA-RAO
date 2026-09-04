@@ -26,12 +26,12 @@ def plot_global(global_bests, out_path, title="Global Best Fitness"):
     plt.close()
 
 
-def plot_locals(local_bests, out_path, title="Local Bests"):
+def plot_locals(local_bests, out_path, title="Local Bests", individual_label="Wolf"):
     _ensure_parent_dir(out_path)
     arr = np.array(local_bests)
     plt.figure(figsize=(10, 5))
     for i in range(arr.shape[1]):
-        plt.plot(arr[:, i], label=f"Wolf {i + 1}")
+        plt.plot(arr[:, i], label=f"{individual_label}-{i + 1}")
     plt.title(title)
     plt.xlabel("Iteration")
     plt.ylabel("Personal Best Validation Accuracy")
@@ -42,7 +42,7 @@ def plot_locals(local_bests, out_path, title="Local Bests"):
     plt.close()
 
 
-def plot_curves(history, out_path):
+def plot_curves(history, out_path, title_suffix=""):
     _ensure_parent_dir(out_path)
     epochs = range(1, len(history["train_accuracy"]) + 1)
 
@@ -50,14 +50,14 @@ def plot_curves(history, out_path):
 
     axes[0].plot(epochs, history["train_accuracy"], label="Training Accuracy")
     axes[0].plot(epochs, history["val_accuracy"], label="Validation Accuracy")
-    axes[0].set_title("Accuracy Curve")
+    axes[0].set_title(f"Accuracy Curve{title_suffix}")
     axes[0].set_ylabel("Accuracy")
     axes[0].legend()
     axes[0].grid(True)
 
     axes[1].plot(epochs, history["train_loss"], label="Training Loss")
     axes[1].plot(epochs, history["val_loss"], label="Validation Loss")
-    axes[1].set_title("Loss Curve")
+    axes[1].set_title(f"Loss Curve{title_suffix}")
     axes[1].set_xlabel("Epoch")
     axes[1].set_ylabel("Loss")
     axes[1].legend()
@@ -68,13 +68,13 @@ def plot_curves(history, out_path):
     plt.close(figure)
 
 
-def plot_confusion_matrix(confusion_matrix, class_names, out_path):
+def plot_confusion_matrix(confusion_matrix, class_names, out_path, title_suffix=""):
     _ensure_parent_dir(out_path)
     normalized_matrix = normalize_confusion_matrix(confusion_matrix)
 
     plt.figure(figsize=(9, 7))
     plt.imshow(normalized_matrix, interpolation="nearest", cmap="Blues")
-    plt.title("Confusion Matrix")
+    plt.title(f"Confusion Matrix{title_suffix}")
     plt.colorbar()
 
     ticks = np.arange(len(class_names))

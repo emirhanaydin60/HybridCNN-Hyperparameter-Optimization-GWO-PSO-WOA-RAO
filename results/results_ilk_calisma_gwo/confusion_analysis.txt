@@ -1,8 +1,0 @@
-Top 5 Confused Class Pairs:
-cat -> dog: 130
-dog -> cat: 101
-automobile -> truck: 49
-cat -> frog: 45
-bird -> deer: 42
-Best Accuracy Class: ship (0.934000)
-Worst Accuracy Class: cat (0.687000)
