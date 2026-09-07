@@ -5,6 +5,12 @@ import os
 from collections import defaultdict
 from statistics import NormalDist
 
+import matplotlib
+
+from plot_colors import COLOR_MAP
+
+matplotlib.use("Agg")
+import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -318,11 +324,22 @@ def _write_csv(path, rows, fieldnames):
 def _write_plot(path, figure):
     ensure_dir(os.path.dirname(path))
     figure.tight_layout()
-    figure.savefig(path, dpi=300)
+    abs_path = os.path.abspath(path)
+    # Save to an in-memory buffer then write to disk to avoid Windows open/save issues
+    try:
+        from io import BytesIO
+
+        buf = BytesIO()
+        figure.savefig(buf, format="png", dpi=300)
+        buf.seek(0)
+        with open(abs_path, "wb") as fh:
+            fh.write(buf.getvalue())
+    finally:
+        buf.close()
     plt.close(figure)
 
 
-def _plot_convergence(runs_by_algorithm, final_report_dir):
+def _plot_convergence(runs_by_algorithm, final_report_dir, save_individual_runs=True):
     mean_series = {}
     per_algorithm_all = {}
     for algorithm, runs in runs_by_algorithm.items():
@@ -338,9 +355,14 @@ def _plot_convergence(runs_by_algorithm, final_report_dir):
     if not mean_series:
         return
 
+    # Use shared color map
+    color_map = COLOR_MAP
+
+    # Mean convergence plot: use algorithm colors
     figure, axis = plt.subplots(figsize=(10, 6))
     for algorithm, series in mean_series.items():
-        axis.plot(range(1, len(series) + 1), series, label=f"Mean {algorithm}", linewidth=2.5)
+        color = color_map.get(algorithm, None)
+        axis.plot(range(1, len(series) + 1), series, label=f"Mean {algorithm}", linewidth=2.5, color=color)
     axis.set_xlabel("Iteration")
     axis.set_ylabel("Validation Accuracy")
     axis.set_title("Mean Convergence Comparison")
@@ -348,11 +370,13 @@ def _plot_convergence(runs_by_algorithm, final_report_dir):
     axis.legend()
     _write_plot(os.path.join(final_report_dir, "mean_convergence_comparison.png"), figure)
 
+    # Convergence across runs: per-run curves use the same algorithm color but lighter (more transparent)
     figure, axis = plt.subplots(figsize=(10, 6))
     for algorithm, array in per_algorithm_all.items():
+        color = color_map.get(algorithm, None)
         for run_index, series in enumerate(array, start=1):
-            axis.plot(range(1, len(series) + 1), series, alpha=0.25)
-        axis.plot(range(1, len(mean_series[algorithm]) + 1), mean_series[algorithm], linewidth=2.5, label=algorithm)
+            axis.plot(range(1, len(series) + 1), series, color=color, alpha=0.40)  # burayı değiştir
+        axis.plot(range(1, len(mean_series[algorithm]) + 1), mean_series[algorithm], linewidth=3.5, label=algorithm, color=color)
     axis.set_xlabel("Iteration")
     axis.set_ylabel("Validation Accuracy")
     axis.set_title("Convergence Comparison Across Runs")
@@ -360,16 +384,20 @@ def _plot_convergence(runs_by_algorithm, final_report_dir):
     axis.legend()
     _write_plot(os.path.join(final_report_dir, "convergence_comparison.png"), figure)
 
-    for algorithm, array in per_algorithm_all.items():
-        figure, axis = plt.subplots(figsize=(10, 6))
-        for run_index, series in enumerate(array, start=1):
-            axis.plot(range(1, len(series) + 1), series, alpha=0.75, label=f"Run {run_index}")
-        axis.set_xlabel("Iteration")
-        axis.set_ylabel("Validation Accuracy")
-        axis.set_title(f"{algorithm} Convergence Across Runs")
-        axis.grid(True, alpha=0.3)
-        axis.legend()
-        _write_plot(os.path.join(final_report_dir, f"{algorithm}_convergence_runs.png"), figure)
+    if save_individual_runs:
+        for algorithm, array in per_algorithm_all.items():
+            figure, axis = plt.subplots(figsize=(10, 6))
+            cmap = plt.get_cmap("tab10")
+            for run_index, series in enumerate(array, start=1):
+                # Use a distinct color per run from a qualitative colormap (not the shared COLOR_MAP)
+                color = cmap((run_index - 1) % cmap.N)
+                axis.plot(range(1, len(series) + 1), series, alpha=0.75, label=f"Run {run_index}", color=color)
+            axis.set_xlabel("Iteration")
+            axis.set_ylabel("Validation Accuracy")
+            axis.set_title(f"{algorithm} Convergence Across Runs")
+            axis.grid(True, alpha=0.3)
+            axis.legend()
+            _write_plot(os.path.join(final_report_dir, f"{algorithm}_convergence_runs.png"), figure)
 
 
 def _plot_diversity(runs_by_algorithm, final_report_dir):
@@ -389,7 +417,8 @@ def _plot_diversity(runs_by_algorithm, final_report_dir):
         padded = [history + [history[-1]] * (max_len - len(history)) for history in histories]
         array = np.asarray(padded, dtype=float)
         mean_series = array.mean(axis=0)
-        axis.plot(range(1, len(mean_series) + 1), mean_series, linewidth=2.5, label=algorithm)
+        color = COLOR_MAP.get(algorithm, None)
+        axis.plot(range(1, len(mean_series) + 1), mean_series, linewidth=2.5, label=algorithm, color=color)
     axis.set_xlabel("Iteration")
     axis.set_ylabel("Population Diversity")
     axis.set_title("Diversity Comparison")
@@ -646,3 +675,22 @@ def build_final_report(results_dir, dataset, config=None):
         "friedman_results_path": os.path.join(final_report_dir, "friedman_results.json"),
         "wilcoxon_results_path": os.path.join(final_report_dir, "wilcoxon_results.csv"),
     }
+
+
+if __name__ == "__main__":
+    # Make running the file in editors (Run File) produce the final report.
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    results_dir = os.path.join(script_dir, "results")
+    dataset = "cifar10"
+    print("[research_analysis] Running as script")
+    print("[research_analysis] Python:", sys.executable)
+    print("[research_analysis] CWD:", os.getcwd())
+    print("[research_analysis] results_dir:", results_dir)
+    print("[research_analysis] dataset:", dataset)
+    # Only regenerate convergence/diversity plots when running the file directly
+    runs = _collect_runs(results_dir, dataset)
+    final_report_dir = os.path.join(results_dir, dataset.upper(), "final_report")
+    ensure_dir(final_report_dir)
+    _plot_convergence(runs, final_report_dir, save_individual_runs=False)
+    _plot_diversity(runs, final_report_dir)
+    print(f"[research_analysis] Updated plots in {final_report_dir}")

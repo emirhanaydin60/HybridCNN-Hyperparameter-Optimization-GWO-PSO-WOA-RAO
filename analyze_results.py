@@ -4,6 +4,7 @@ import os
 from collections import defaultdict
 
 import matplotlib.pyplot as plt
+from plot_colors import COLOR_MAP, COLOR_SEQUENCE
 import numpy as np
 
 from utils import ensure_dir, read_json, write_json
@@ -90,7 +91,7 @@ def plot_metric(metric_map, key, ylabel, out_path):
     algorithms = list(metric_map.keys())
     values = [metric_map[name][key] for name in algorithms]
     plt.figure(figsize=(8, 4))
-    plt.bar(algorithms, values, color=["#264653", "#2a9d8f", "#e9c46a", "#f4a261"])
+    plt.bar(algorithms, values, color=COLOR_SEQUENCE)
     plt.ylabel(ylabel)
     plt.tight_layout()
     plt.savefig(out_path, dpi=300)
@@ -185,7 +186,8 @@ def main():
     if convergence_summary:
         plt.figure(figsize=(9, 5))
         for algorithm, series in convergence_summary.items():
-            plt.plot(range(1, len(series) + 1), series, label=algorithm)
+            color = COLOR_MAP.get(algorithm)
+            plt.plot(range(1, len(series) + 1), series, label=algorithm, color=color)
         plt.xlabel("Iteration")
         plt.ylabel("Mean Global Best Fitness")
         plt.legend()
