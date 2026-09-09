@@ -110,7 +110,7 @@ def run_one(model_entry, base_config):
         epochs=3,
         patience=None,
         logger=logger,
-        checkpoint_path=None,
+        checkpoint_path=os.path.join(run_dir, "best_model.pth"),
     )
     total_time = time.perf_counter() - start
 
@@ -123,6 +123,7 @@ def run_one(model_entry, base_config):
         "model_type": model_type,
         "optimizer": optimizer,
         "run": "stage3_validation",
+        "best_model_path": os.path.join(run_dir, "best_model.pth"),
         "parameter_count": {"total": total, "trainable": trainable, "non_trainable": non_trainable, "millions": millions},
         "history": history,
         "train_time_seconds": train_time,

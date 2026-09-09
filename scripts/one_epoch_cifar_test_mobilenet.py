@@ -77,6 +77,7 @@ def main():
         epochs=3,
         patience=None,
         logger=logger,
+        checkpoint_path=os.path.join(run_dir, "best_model.pth"),
     )
     total_time = time.perf_counter() - start
 
@@ -89,6 +90,7 @@ def main():
         "model": "mobilenetv3-large",
         "seed": config.random_seed,
         "device": str(device),
+        "best_model_path": os.path.join(run_dir, "best_model.pth"),
         "history": history,
         "best_val_accuracy": best_val_acc,
         "best_epoch": best_epoch,
