@@ -57,7 +57,8 @@ def run_one(model_entry, base_config):
     if best_hp is not None and "batch_size" in best_hp:
         batch_size = best_hp["batch_size"]
     else:
-        batch_size = base_config.batch_size
+        # For baseline models, prefer batch_size=32 to match HybridCNN runs
+        batch_size = 32 if model_type == "Baseline_CNN" else base_config.batch_size
 
     logger.info("Running %s | batch_size=%s", model_name, batch_size)
 
