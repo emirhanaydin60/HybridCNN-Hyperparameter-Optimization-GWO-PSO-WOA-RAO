@@ -24,7 +24,7 @@ def _replace_last_linear(model: nn.Module, out_features: int) -> Tuple[nn.Module
     if last_name is None:
         raise RuntimeError("No Linear layer found to replace")
 
-    parts = last_name.split('.')
+    parts = last_name.split(".")
     parent = model
     for p in parts[:-1]:
         if p.isdigit():

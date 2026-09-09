@@ -1,0 +1,7 @@
+Model,Model_Type,Optimizer,Run,Total_Parameters,Trainable_Parameters,Non_Trainable_Parameters,Parameters_Millions,Dummy_Output_Shape
+HybridCNN_GWO_Run1,Optimized_HybridCNN,GWO,GWO Run 1,7429418,7429418,0,7.429418,"torch.Size([2, 10])"
+HybridCNN_GWO_Run3,Optimized_HybridCNN,GWO,GWO Run 3,3239242,3239242,0,3.239242,"torch.Size([2, 10])"
+HybridCNN_WOA_Run3,Optimized_HybridCNN,WOA,WOA Run 3,7411658,7411658,0,7.411658,"torch.Size([2, 10])"
+efficientnet-b0,Baseline_CNN,Baseline,Baseline,4020358,4020358,0,4.020358,"torch.Size([2, 10])"
+mobilenetv3-large,Baseline_CNN,Baseline,Baseline,4214842,4214842,0,4.214842,"torch.Size([2, 10])"
+shufflenetv2-1.5x,Baseline_CNN,Baseline,Baseline,2488874,2488874,0,2.488874,"torch.Size([2, 10])"

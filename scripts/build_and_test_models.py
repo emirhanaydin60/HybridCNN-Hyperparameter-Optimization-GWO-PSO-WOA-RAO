@@ -7,7 +7,6 @@ import math
 
 from model_factory import create_model
 
-
 RUN_MODELS = [
     ("HybridCNN_GWO_Run1", "Optimized_HybridCNN", "GWO", "GWO Run 1"),
     ("HybridCNN_GWO_Run3", "Optimized_HybridCNN", "GWO", "GWO Run 3"),
@@ -61,28 +60,32 @@ def main():
         except Exception as e:
             out_shape = f"forward failed: {e}"
 
-        rows.append({
-            "Model": model_name,
-            "Model_Type": model_type,
-            "Optimizer": optimizer,
-            "Run": run,
-            "Total_Parameters": total,
-            "Trainable_Parameters": trainable,
-            "Non_Trainable_Parameters": non_trainable,
-            "Parameters_Millions": f"{millions:.6f}",
-            "Dummy_Output_Shape": str(out_shape),
-        })
+        rows.append(
+            {
+                "Model": model_name,
+                "Model_Type": model_type,
+                "Optimizer": optimizer,
+                "Run": run,
+                "Total_Parameters": total,
+                "Trainable_Parameters": trainable,
+                "Non_Trainable_Parameters": non_trainable,
+                "Parameters_Millions": f"{millions:.6f}",
+                "Dummy_Output_Shape": str(out_shape),
+            }
+        )
 
-        comparison_rows.append({
-            "Model": model_name,
-            "Model_Type": model_type,
-            "Optimizer": optimizer,
-            "Run": run,
-            "Total_Parameters": total,
-            "Trainable_Parameters": trainable,
-            "Non_Trainable_Parameters": non_trainable,
-            "Parameters_Millions": f"{millions:.6f}",
-        })
+        comparison_rows.append(
+            {
+                "Model": model_name,
+                "Model_Type": model_type,
+                "Optimizer": optimizer,
+                "Run": run,
+                "Total_Parameters": total,
+                "Trainable_Parameters": trainable,
+                "Non_Trainable_Parameters": non_trainable,
+                "Parameters_Millions": f"{millions:.6f}",
+            }
+        )
 
     # write baseline CSV (only baseline models rows)
     with open(OUT_BASELINE_CSV, "w", newline="", encoding="utf-8") as f:

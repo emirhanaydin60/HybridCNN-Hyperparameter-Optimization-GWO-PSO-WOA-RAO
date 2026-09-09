@@ -1,0 +1,4 @@
+2026-09-09 12:19:31,018 | INFO | Starting 1-epoch CIFAR-10 test: EfficientNet-B0
+2026-09-09 12:19:32,331 | INFO | Using device: cpu
+2026-09-09 12:22:38,883 | INFO | epoch=1 train_loss=1.892273 train_acc=0.299778 val_loss=1.572300 val_acc=0.427000
+2026-09-09 12:22:50,886 | INFO | 1-epoch test complete. Results saved to results\CIFAR10\ONE_EPOCH_TEST\EfficientNetB0_run01
