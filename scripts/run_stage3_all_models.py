@@ -3,6 +3,7 @@ import csv
 import time
 import json
 import sys
+import argparse
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -97,7 +98,7 @@ def run_one(model_entry, base_config):
         },
     )
 
-    # Train for 1 epoch
+    # Train for 3 epochs (use last-epoch metrics for reporting)
     start = time.perf_counter()
     model, history, best_val_acc, best_epoch, train_time = train_model(
         model,
@@ -105,7 +106,7 @@ def run_one(model_entry, base_config):
         bundle.val_loader,
         device,
         learning_rate=(best_hp.get("learning_rate") if best_hp and "learning_rate" in best_hp else base_config.learning_rate),
-        epochs=1,
+        epochs=3,
         patience=None,
         logger=logger,
         checkpoint_path=None,
@@ -135,6 +136,10 @@ def run_one(model_entry, base_config):
     write_json(os.path.join(run_dir, "confusion_matrix.json"), {"matrix": confusion.tolist()})
 
     # Return line for CSV
+    # Use last epoch values when available
+    def last_or_none(lst):
+        return lst[-1] if lst else None
+
     return {
         "Model": model_name,
         "Model_Type": model_type,
@@ -143,10 +148,10 @@ def run_one(model_entry, base_config):
         "Total_Parameters": int(total),
         "Trainable_Parameters": int(trainable),
         "Parameters_Millions": f"{millions:.6f}",
-        "Train_Loss": history["train_loss"][0] if history["train_loss"] else None,
-        "Train_Accuracy": history["train_accuracy"][0] if history["train_accuracy"] else None,
-        "Val_Loss": history["val_loss"][0] if history["val_loss"] else None,
-        "Val_Accuracy": history["val_accuracy"][0] if history["val_accuracy"] else None,
+        "Train_Loss": last_or_none(history["train_loss"]),
+        "Train_Accuracy": last_or_none(history["train_accuracy"]),
+        "Val_Loss": last_or_none(history["val_loss"]),
+        "Val_Accuracy": last_or_none(history["val_accuracy"]),
         "Test_Loss": test_metrics["loss"],
         "Test_Accuracy": test_metrics["accuracy"],
         "Precision": float(summary_scores.get("precision", 0.0)),
@@ -157,11 +162,19 @@ def run_one(model_entry, base_config):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--include-hybrids", action="store_true", help="Include optimized HybridCNN models in this run")
+    args = parser.parse_args()
+
     ensure_dir(OUT_DIR)
     config = load_config(None)
 
+    models_to_run = MODELS
+    if not args.include_hybrids:
+        models_to_run = [m for m in MODELS if m[1] == "Baseline_CNN"]
+
     rows = []
-    for m in MODELS:
+    for m in models_to_run:
         try:
             row = run_one(m, config)
         except Exception as e:

@@ -1,7 +1,6 @@
 import os
 import time
 import json
-import os
 import sys
 import torch
 
@@ -25,11 +24,11 @@ def main():
     config.search_epochs = 6
 
     # prepare run dir
-    run_dir = os.path.join("results", "CIFAR10", "ONE_EPOCH_TEST", "EfficientNetB0_run01")
+    run_dir = os.path.join("results", "CIFAR10", "ONE_EPOCH_TEST", "MobileNetV3_run01")
     ensure_dir(run_dir)
 
     logger = setup_logging(os.path.join(run_dir, "run.log"))
-    logger.info("Starting 1-epoch CIFAR-10 test: EfficientNet-B0")
+    logger.info("Starting 1-epoch CIFAR-10 test: MobileNetV3-Large")
 
     # Seed
     set_global_seed(config.random_seed)
@@ -49,7 +48,7 @@ def main():
     logger.info("Using device: %s", device)
 
     # Model
-    model = create_model("efficientnet-b0", num_classes=bundle.num_classes, device=device)
+    model = create_model("mobilenetv3-large", num_classes=bundle.num_classes, device=device)
 
     # Parameter counts
     total = sum(p.numel() for p in model.parameters())
@@ -87,7 +86,7 @@ def main():
 
     result = {
         "dataset": config.dataset,
-        "model": "efficientnet-b0",
+        "model": "mobilenetv3-large",
         "seed": config.random_seed,
         "device": str(device),
         "history": history,
@@ -107,7 +106,7 @@ def main():
         },
     )
 
-    logger.info("1-epoch test complete. Results saved to %s", run_dir)
+    logger.info("1-epoch MobileNetV3 test complete. Results saved to %s", run_dir)
 
 
 if __name__ == "__main__":

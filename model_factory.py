@@ -16,7 +16,22 @@ def _load_hyperparams_from_summary(path: str) -> dict:
 
 
 def _replace_last_linear(model: nn.Module, out_features: int) -> Tuple[nn.Module, str]:
-    # Find last nn.Linear module and replace it with new Linear(out_features)
+    # Prefer replacing the classifier's last Linear when available (safer for torchvision models)
+    # 1) If model has `classifier` and it's a Sequential, replace its last Linear
+    if hasattr(model, "classifier") and isinstance(model.classifier, nn.Sequential):
+        for i in range(len(model.classifier) - 1, -1, -1):
+            if isinstance(model.classifier[i], nn.Linear):
+                old_linear = model.classifier[i]
+                model.classifier[i] = nn.Linear(old_linear.in_features, out_features)
+                return model, f"classifier.{i}"
+
+    # 2) If model has `fc` attribute (common in some models), replace it
+    if hasattr(model, "fc") and isinstance(getattr(model, "fc"), nn.Linear):
+        old_linear = getattr(model, "fc")
+        model.fc = nn.Linear(old_linear.in_features, out_features)
+        return model, "fc"
+
+    # 3) Fallback: find last nn.Linear in the module tree and replace it (preserve parent lookup)
     last_name = None
     for name, mod in model.named_modules():
         if isinstance(mod, nn.Linear):
@@ -33,7 +48,6 @@ def _replace_last_linear(model: nn.Module, out_features: int) -> Tuple[nn.Module
             parent = getattr(parent, p)
 
     last_part = parts[-1]
-    old_linear = None
     if last_part.isdigit():
         idx = int(last_part)
         old_linear = parent[idx]
