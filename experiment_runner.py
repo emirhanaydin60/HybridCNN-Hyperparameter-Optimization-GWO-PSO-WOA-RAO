@@ -59,6 +59,13 @@ def get_individual_label(algorithm_name):
 
 
 def build_model(model_config, in_channels, img_size, num_classes):
+    # If a model_name is provided (non-hybrid), delegate to model_factory to create other architectures.
+    if isinstance(model_config, dict) and "model_name" in model_config and model_config.get("model_name") != "hybrid_cnn":
+        # import locally to avoid circular imports at module load
+        from model_factory import create_model
+
+        return create_model(model_config["model_name"], num_classes=num_classes, device="cpu")
+
     return HybridCNN(
         in_channels=in_channels,
         img_size=img_size,
