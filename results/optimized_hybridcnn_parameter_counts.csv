@@ -1,0 +1,4 @@
+Model,Optimizer,Run,Total_Parameters,Trainable_Parameters,Parameters_Millions
+HybridCNN,GWO,run_01,7429418,7429418,7.429418
+HybridCNN,GWO,run_03,3239242,3239242,3.239242
+HybridCNN,WOA,run_03,7411658,7411658,7.411658
